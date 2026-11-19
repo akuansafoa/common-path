@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FFFAED">
+  <meta name="description" content="A commonplace book: quotes from your reading, journal entries and walk notes in one searchable place, tagged by theme.">
+  <title>Commonplace</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23FF7D59'%3E%3Ccircle cx='50' cy='24' r='20'/%3E%3Ccircle cx='72.5' cy='37' r='20'/%3E%3Ccircle cx='72.5' cy='63' r='20'/%3E%3Ccircle cx='50' cy='76' r='20'/%3E%3Ccircle cx='27.5' cy='63' r='20'/%3E%3Ccircle cx='27.5' cy='37' r='20'/%3E%3Ccircle cx='50' cy='50' r='26'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Fraunces:opsz,wght,SOFT@9..144,400..700,100&family=Quicksand:wght@400..700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Icons and decorative shapes, reused throughout the page -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-9 9"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+    <symbol id="i-quote" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M4 7h6v6c0 3.5-1.8 5.6-5 6.6l-.9-1.7C6 17.1 7 15.7 7.2 14H4zM14 7h6v6c0 3.5-1.8 5.6-5 6.6l-.9-1.7c1.9-.8 2.9-2.2 3.1-3.9H14z"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19C5 10.5 11 5 20 4c0 9.5-6 15-14.5 15"/><path d="M5 19l8-8"/></symbol>
+
+    <symbol id="s-flower" viewBox="0 0 100 100"><g fill="currentColor"><circle cx="50" cy="24" r="20"/><circle cx="72.5" cy="37" r="20"/><circle cx="72.5" cy="63" r="20"/><circle cx="50" cy="76" r="20"/><circle cx="27.5" cy="63" r="20"/><circle cx="27.5" cy="37" r="20"/><circle cx="50" cy="50" r="26"/></g></symbol>
+    <symbol id="s-sparkle" viewBox="0 0 100 100"><path fill="currentColor" d="M50 0C54 36 64 46 100 50 64 54 54 64 50 100 46 64 36 54 0 50 36 46 46 36 50 0z"/></symbol>
+    <symbol id="s-burst" viewBox="0 0 100 100"><path id="burst-path" fill="currentColor" d=""/></symbol>
+    <symbol id="s-blob" viewBox="0 0 100 100"><path fill="currentColor" d="M62 6c19 5 33 22 32 42-1 23-18 46-43 46S6 78 7 55C8 32 18 13 33 7c9-4 19-3 29-1z"/></symbol>
+  </svg>
+
+  <header class="top">
+    <div class="top__brand">
+      <svg class="top__mark" aria-hidden="true"><use href="#s-flower"/></svg>
+      <span>Commonplace</span>
+    </div>
+    <p class="top__date" id="today"></p>
+  </header>
+
+  <main>
+    <!-- HOME: search + all entries -->
+    <section class="view" id="view-home" aria-labelledby="greeting">
+      <h1 class="greeting" id="greeting">Hello</h1>
+      <p class="lede">Quotes, journal entries and walks, gathered by theme.</p>
+
+      <div class="notice" id="sample-notice" hidden>
+        <p>These are sample entries. Try searching <b>patience</b>, then add your own.</p>
+        <button type="button" class="btn btn--small btn--light" id="remove-samples-inline">Remove samples</button>
+      </div>
+
+      <label class="search">
+        <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+        <input type="search" id="search" placeholder="Search quotes, journal, walks…" autocomplete="off" enterkeyhint="search" aria-label="Search your entries">
+      </label>
+
+      <div class="pills" id="type-filters" role="group" aria-label="Show entry type">
+        <button type="button" class="pill is-active" data-type="all" aria-pressed="true">All <span></span></button>
+        <button type="button" class="pill" data-type="quote" aria-pressed="false">Quotes <span></span></button>
+        <button type="button" class="pill" data-type="journal" aria-pressed="false">Journal <span></span></button>
+        <button type="button" class="pill" data-type="walk" aria-pressed="false">Walks <span></span></button>
+      </div>
+
+      <div class="active-tag" id="active-tag" hidden></div>
+      <p class="result-count" id="result-count" aria-live="polite"></p>
+      <div class="list" id="list"></div>
+    </section>
+
+    <!-- THEMES: every tag as a bubble -->
+    <section class="view" id="view-themes" aria-labelledby="themes-title" hidden>
+      <h1 class="greeting" id="themes-title">Themes</h1>
+      <p class="lede">Every tag you've used. Tap one to see everything filed under it.</p>
+      <div class="bubbles" id="bubbles"></div>
+    </section>
+
+    <!-- PHOTOS: gallery of book covers and trails -->
+    <section class="view" id="view-photos" aria-labelledby="photos-title" hidden>
+      <h1 class="greeting" id="photos-title">Photos</h1>
+      <p class="lede">Book covers, underlined pages and trails you've walked.</p>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <!-- BACKUP -->
+    <section class="view" id="view-backup" aria-labelledby="backup-title" hidden>
+      <h1 class="greeting" id="backup-title">Backup</h1>
+      <p class="lede">Your entries live only in this browser on this device.</p>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="panel panel--peri">
+        <svg class="panel__deco" aria-hidden="true"><use href="#s-flower"/></svg>
+        <h2>Save a copy</h2>
+        <p>Downloads one file with all your entries and photos. Keep it somewhere safe, such as your email or cloud drive.</p>
+        <button type="button" class="btn" id="export">
+          <svg class="icon" aria-hidden="true"><use href="#i-save"/></svg> Download backup
+        </button>
+      </div>
+
+      <div class="panel panel--peach">
+        <svg class="panel__deco" aria-hidden="true"><use href="#s-burst"/></svg>
+        <h2>Restore</h2>
+        <p>Load a backup file, for example to move your book to a new phone. Entries from the file are added to this device.</p>
+        <label class="btn btn--light">
+          Choose backup file
+          <input type="file" id="import" accept="application/json,.json" class="visually-hidden">
+        </label>
+      </div>
+
+      <div class="panel panel--blush">
+        <h2>Where your data lives</h2>
+        <p>Nothing is uploaded anywhere. Entries and photos stay in this browser and are <b>not</b> synced between devices. Clearing this site's data in your browser settings erases them, so download a backup now and then.</p>
+        <p class="hint" id="usage"></p>
+        <div class="panel__row">
+          <button type="button" class="btn btn--light" id="remove-samples" hidden>Remove sample entries</button>
+          <button type="button" class="btn btn--danger" id="erase">Erase everything</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Main">
+    <button type="button" class="nav__item is-active" data-go="home" aria-current="page">
+      <svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span>
+    </button>
+    <button type="button" class="nav__item" data-go="themes">
+      <svg class="icon" aria-hidden="true"><use href="#i-tag"/></svg><span>Themes</span>
+    </button>
+    <button type="button" class="nav__add" id="add" aria-label="New entry">
+      <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+    </button>
+    <button type="button" class="nav__item" data-go="photos">
+      <svg class="icon" aria-hidden="true"><use href="#i-image"/></svg><span>Photos</span>
+    </button>
+    <button type="button" class="nav__item" data-go="backup">
+      <svg class="icon" aria-hidden="true"><use href="#i-save"/></svg><span>Backup</span>
+    </button>
+  </nav>
+
+  <!-- ADD / EDIT ENTRY -->
+  <dialog class="sheet" id="entry-dialog" aria-labelledby="entry-title">
+    <form id="entry-form" novalidate>
+      <div class="sheet__bar">
+        <button type="button" class="round" id="entry-close" aria-label="Close without saving">
+          <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+        <h2 id="entry-title">New entry</h2>
+        <button type="submit" class="round round--ink" aria-label="Save entry">
+          <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>
+        </button>
+      </div>
+
+      <div class="sheet__body">
+        <fieldset class="types">
+          <legend>What are you saving?</legend>
+          <div class="types__row">
+            <label class="type-choice type-choice--quote">
+              <input type="radio" name="type" value="quote" checked>
+              <svg class="icon" aria-hidden="true"><use href="#i-quote"/></svg><span>Quote</span>
+            </label>
+            <label class="type-choice type-choice--journal">
+              <input type="radio" name="type" value="journal">
+              <svg class="icon" aria-hidden="true"><use href="#i-pen"/></svg><span>Journal</span>
+            </label>
+            <label class="type-choice type-choice--walk">
+              <input type="radio" name="type" value="walk">
+              <svg class="icon" aria-hidden="true"><use href="#i-leaf"/></svg><span>Walk</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="field" data-types="journal">
+          <label for="f-title">Title</label>
+          <input type="text" id="f-title" name="title" placeholder="A few words" maxlength="200">
+        </div>
+
+        <div class="field" data-types="walk">
+          <label for="f-place">Where did you walk?</label>
+          <input type="text" id="f-place" name="place" placeholder="Riverside loop" maxlength="200">
+        </div>
+        <div class="field" data-types="walk">
+          <label for="f-distance">Distance or time <small>(optional)</small></label>
+          <input type="text" id="f-distance" name="distance" placeholder="3 km · 40 min" maxlength="100">
+        </div>
+
+        <div class="field">
+          <label for="f-text" id="f-text-label">The quote</label>
+          <textarea id="f-text" name="text" rows="5" aria-describedby="f-text-error"></textarea>
+          <p class="field__error" id="f-text-error" hidden>Please write something before saving.</p>
+        </div>
+
+        <div class="field" data-types="quote">
+          <label for="f-author">Author</label>
+          <input type="text" id="f-author" name="author" placeholder="Who said or wrote it" maxlength="200">
+        </div>
+        <div class="row" data-types="quote">
+          <div class="field">
+            <label for="f-book">Book or source</label>
+            <input type="text" id="f-book" name="book" maxlength="200">
+          </div>
+          <div class="field">
+            <label for="f-page">Page</label>
+            <input type="text" id="f-page" name="page" inputmode="numeric" maxlength="20">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-tags">Themes</label>
+          <input type="text" id="f-tags" name="tags" placeholder="patience, courage" autocapitalize="none" aria-describedby="f-tags-hint">
+          <p class="hint" id="f-tags-hint">Separate themes with commas. Tap one you've used before:</p>
+          <div class="suggest" id="tag-suggest"></div>
+        </div>
+
+        <div class="field">
+          <span class="label">Photo <small>(optional)</small></span>
+          <div class="photo-box">
+            <img id="photo-preview" alt="Photo attached to this entry" hidden>
+            <p class="hint" id="photo-hint">The cover of the book, or a page you underlined.</p>
+            <div class="photo-actions">
+              <label class="btn btn--light btn--small" id="camera-btn">
+                <svg class="icon" aria-hidden="true"><use href="#i-camera"/></svg> Take photo
+                <input type="file" id="photo-camera" accept="image/*" capture="environment" class="visually-hidden">
+              </label>
+              <label class="btn btn--light btn--small">
+                <svg class="icon" aria-hidden="true"><use href="#i-image"/></svg> <span id="choose-label">Choose photo</span>
+                <input type="file" id="photo-library" accept="image/*" class="visually-hidden">
+              </label>
+              <button type="button" class="btn btn--ghost btn--small" id="photo-remove" hidden>Remove photo</button>
+            </div>
+            <p class="hint" id="photo-status" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-date">Date</label>
+          <input type="date" id="f-date" name="date">
+        </div>
+
+        <button type="submit" class="btn btn--block save-btn">Save entry</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- FULL-SCREEN PHOTO -->
+  <dialog class="viewer" id="viewer" aria-label="Photo">
+    <button type="button" class="round round--light viewer__close" id="viewer-close" aria-label="Close photo">
+      <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+    </button>
+    <img id="viewer-img" alt="">
+    <p id="viewer-caption"></p>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
