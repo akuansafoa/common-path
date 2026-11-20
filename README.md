@@ -28,8 +28,8 @@ A phone-friendly commonplace book: quotes from your reading, journal entries and
 ## How to test
 
 1. Double-click `index.html` to open it in your browser.
-2. You'll see three sample entries tagged "patience". Type `patience` in the search box: all three appear, with the matches highlighted.
-3. Tap the pink **+** button and add a quote, a journal entry and a walk. Give at least one of them a theme and a photo.
+2. The book starts empty. Tap the pink **+** button and add a quote, a journal entry and a walk. Give each the theme `patience`, and give at least one a photo.
+3. Type `patience` in the search box: all three appear, with the matches highlighted.
 4. Open **Themes** and tap a bubble. Open **Photos** and tap a picture.
 5. Edit an entry, then delete one.
 6. On **Backup**, download a backup, erase everything, then restore from the file.

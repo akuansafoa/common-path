@@ -119,11 +119,6 @@ const pad = (n) => String(n).padStart(2, '0');
 function todayISO(d = new Date()) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
-function daysAgoISO(n) {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  return todayISO(d);
-}
 function fmtDate(iso, opts = { day: 'numeric', month: 'short', year: 'numeric' }) {
   const [y, m, d] = String(iso).split('-').map(Number);
   if (!y || !m || !d) return '';
@@ -689,33 +684,6 @@ async function eraseAll() {
   render();
 }
 
-/* ================= Sample entries (first visit only) ================= */
-
-function sampleEntries() {
-  const now = Date.now();
-  const base = { title: '', author: '', book: '', page: '', place: '', distance: '', photo: null, sample: true, createdAt: now, updatedAt: now };
-  return [
-    {
-      ...base, id: uid(), type: 'quote', date: daysAgoISO(9),
-      text: 'The two most powerful warriors are patience and time.',
-      author: 'Leo Tolstoy', book: 'War and Peace',
-      tags: ['patience', 'time'],
-    },
-    {
-      ...base, id: uid(), type: 'journal', date: daysAgoISO(3),
-      title: 'Waiting for grades',
-      text: 'Grades come out on Friday and I have refreshed the portal four times today. Nothing I do now changes the result. Practising patience: do the next small thing, then the next. Made tea, read two chapters, felt calmer.',
-      tags: ['patience', 'law school'],
-    },
-    {
-      ...base, id: uid(), type: 'walk', date: daysAgoISO(0),
-      place: 'Riverside loop', distance: '3.2 km · 40 min',
-      text: 'Watched a heron stand completely still in the shallows for ten minutes before it struck. Patience isn’t doing nothing. It’s paying attention and waiting for the right moment. Feels relevant to exam prep.',
-      tags: ['patience', 'nature', 'attention'],
-    },
-  ];
-}
-
 /* ================= Start up ================= */
 
 function setGreeting() {
@@ -790,10 +758,6 @@ async function init() {
   }
 
   try {
-    if (!(await store.getMeta('seeded'))) {
-      await store.putMany(sampleEntries());
-      await store.setMeta('seeded', true);
-    }
     state.entries = await store.all();
   } catch (err) {
     console.error(err);
